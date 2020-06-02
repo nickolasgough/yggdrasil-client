@@ -1,26 +1,30 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+/* global chrome */
+
+const EventType = {
+  ToggleMute: "toggle-mute"
 }
 
+function App() {
+  function doSomething() {
+    chrome.tabs.query({
+      url: "https://meet.google.com/*"
+    }, (tabs) => {
+      console.log(tabs);
+      if (tabs.length > 0) {
+        const message = {
+          eventType: EventType.ToggleMute
+        }
+        chrome.tabs.sendMessage(tabs[0].id, message, (response) => {
+          console.log("response: ", response);
+        });
+      }
+    });
+  }
+  return (
+    <button onClick={doSomething}>Click me!</button>
+  );
+}
 export default App;
