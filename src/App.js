@@ -1,30 +1,31 @@
-import React from 'react';
-import './App.css';
+import React, { useState } from "react";
+import "./App.css";
+import Meets from "./components/Meets"
 
 /* global chrome */
 
-const EventType = {
-  ToggleMute: "toggle-mute"
-}
-
 function App() {
-  function doSomething() {
-    chrome.tabs.query({
-      url: "https://meet.google.com/*"
-    }, (tabs) => {
-      console.log(tabs);
-      if (tabs.length > 0) {
-        const message = {
-          eventType: EventType.ToggleMute
-        }
-        chrome.tabs.sendMessage(tabs[0].id, message, (response) => {
-          console.log("response: ", response);
+  const [meets, setMeets] = useState([]);
+  chrome.tabs.query({
+    url: "https://meet.google.com/*"
+  }, (tabs) => {
+    if (tabs.length > 0) {
+      setMeets(() => {
+        return tabs.map(tab => {
+          return {
+            id: tab.id,
+            name: tab.title,
+          }
         });
-      }
-    });
-  }
+      });
+    }
+  });
+
   return (
-    <button onClick={doSomething}>Click me!</button>
+    <div className="extension">
+      <Meets meets={meets}/>
+    </div>
   );
 }
+
 export default App;
