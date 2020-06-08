@@ -1,41 +1,43 @@
 /* global chrome */
 
 const Message = {
-  MicStatus: "mic-status",
+  FeatureStatuses: "feature-statuses",
   ToggleMic: "toggle-mic",
-  CamStatus: "cam-status",
   ToggleCam: "toggle-cam"
 }
 
 const switchMicOnTooltip = "Turn on microphone (⌘ + d)";
 const switchMicOffTooltip = "Turn off microphone (⌘ + d)";
 const switchCamOnTooltip = "Turn on camera (⌘ + e)";
-const switchCamOffTooltip = "Turn on camera (⌘ + e)";
+const switchCamOffTooltip = "Turn off camera (⌘ + e)";
 
 chrome.runtime.onMessage.addListener((message, sender, respond) => {
-  let status;
   switch (message.messageType) {
-    case Message.MicStatus:
-      status = checkFeature(switchMicOffTooltip, switchMicOffTooltip);
-      respond(status);
+    case Message.FeatureStatuses:
+      respond(checkFeatures());
       break;
     case Message.ToggleMic:
-      toggleFeature(switchMicOffTooltip, switchMicOffTooltip);
-      break;
-    case Message.CamStatus:
-      status = checkFeature(switchCamOffTooltip, switchCamOffTooltip);
-      respond(status);
+      toggleFeature(switchMicOnTooltip, switchMicOffTooltip);
       break;
     case Message.ToggleCam:
-      toggleFeature(switchCamOffTooltip, switchCamOffTooltip);
+      toggleFeature(switchCamOnTooltip, switchCamOffTooltip);
       break;
     default:
   }
 });
 
-function checkFeature(switchOnTooltip, switchOffTooltip) {
-  const onButton = document.querySelector(`[data-tooltip="${switchOnTooltip}"]`);
-  const offButton = document.querySelector(`[data-tooltip="${switchOffTooltip}"]`);
+function checkFeatures() {
+  const micStatus = checkFeature(switchMicOnTooltip, switchMicOffTooltip);
+  const camStatus = checkFeature(switchCamOnTooltip, switchCamOffTooltip);
+  return {
+    micOn: micStatus,
+    camOn: camStatus
+  };
+}
+
+function checkFeature(switchFeatureOnTooltip, switchFeatureOffTooltip) {
+  const onButton = document.querySelector(`[data-tooltip="${switchFeatureOffTooltip}"]`);
+  const offButton = document.querySelector(`[data-tooltip="${switchFeatureOnTooltip}"]`);
   if (!!onButton) {
     return true;
   }
@@ -44,9 +46,9 @@ function checkFeature(switchOnTooltip, switchOffTooltip) {
   }
 }
 
-function toggleFeature(switchOnTooltip, switchOffTooltip) {
-  const onButton = document.querySelector(`[data-tooltip="${switchOnTooltip}"]`);
-  const offButton = document.querySelector(`[data-tooltip="${switchOffTooltip}"]`);
+function toggleFeature(switchFeatureOnTooltip, switchFeatureOffTooltip) {
+  const onButton = document.querySelector(`[data-tooltip="${switchFeatureOnTooltip}"]`);
+  const offButton = document.querySelector(`[data-tooltip="${switchFeatureOffTooltip}"]`);
   if (!!onButton) {
     onButton.click();
   }

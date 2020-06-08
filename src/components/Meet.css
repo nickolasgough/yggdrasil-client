@@ -1,0 +1,11 @@
+.meet {
+    display: flex;
+    flex-flow: row;
+}
+
+.title {
+    padding: 0 12px;
+}
+.button {
+    padding: 0 4px;
+}

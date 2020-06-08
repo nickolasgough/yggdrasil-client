@@ -14,7 +14,7 @@ function App() {
         return tabs.map(tab => {
           return {
             id: tab.id,
-            name: tab.title,
+            name: tab.title
           }
         });
       });
